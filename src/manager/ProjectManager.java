@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import model.Project;
 import java.util.ArrayList;
+import model.Developer;
 import tools.FileUtils;
 
 public class ProjectManager {
@@ -62,6 +63,45 @@ public class ProjectManager {
         System.out.println("Data loaded successfully from files!");
         System.out.println("Total Projects loaded: " + projList.size());
     }
+    
+    //findById
+    public Project findById(String projId) {
+        for (Project proj : projList) {
+            if (proj.getProjectId().equalsIgnoreCase(projId)) {
+                return proj;
+            }
+        }
+        return null;
+    }
+    
+    //Add new project
+    public boolean addNewProject(DevManager dm ,Project proj) {
+        if (findById(proj.getProjectId()) != null) {
+            System.out.println("Project ID already exists");
+            return false;
+        }
+        
+        Developer dev = dm.findById(proj.getDevId());
+        if (dev == null) {
+            System.out.println("Developer ID does not exists");
+            return false;
+        }
+        
+        LocalDate currentDate = LocalDate.now();
+        if (!proj.getStartDate().isAfter(currentDate)) {
+            System.out.println("Start date must be after current date");
+            return false;
+        }
+        
+        projList.add(proj);
+        System.out.println("Add new project successfully");
+        saved = false;
+        return true;        
+    }
+    
+    
+    
+    
 
     //saveToFile of projects.txt
     public void saveToFile() {

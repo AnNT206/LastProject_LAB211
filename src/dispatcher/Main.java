@@ -4,6 +4,7 @@ package dispatcher;
 import manager.DevManager;
 import manager.ProjectManager;
 import model.Developer;
+import model.Project;
 import tools.Inputter;
 
 public class Main {
@@ -59,7 +60,8 @@ public class Main {
                     dm.listByLanguage(searchLang);
                     break;
                 case 6:
-                    System.out.println("Function 6 is under construction.");
+                    Project proj = input.addNewProject();
+                    pm.addNewProject(dm, proj);
                     break;
                 case 7:
                     System.out.println("Function 7 is under construction.");
