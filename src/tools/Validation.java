@@ -5,7 +5,7 @@ public interface Validation {
     public static final String DEV_ID_VALID = "^DEV[0-9]{3}$";
     public static final String PROJECT_ID_VALID = "^(?i)proj[0-9]{2}$";
     public static final String FULL_NAME_VALID = "^[a-zA-Z]+(\\s[a-zA-Z]+)+$";
-    public static final String PROGRAM_LANGUAGE_VALID = "^[A-Za-z][A-Za-z0-9+#]+$";
+    public static final String PROGRAM_LANGUAGE_VALID = "^[A-Za-z.][A-Za-z0-9+#.]*$";
     public static final String SALARY_VALID = "^[1-9][0-9]{3,}$";
     public static final String DURATION_MONTHS_VALID = "^[1-9][0-9]*$";
     public static final String START_DATE_VALID = "^[0-9]{4}-[0-9]{2}-[0-9]{2}$";
