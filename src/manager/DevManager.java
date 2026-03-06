@@ -120,9 +120,9 @@ public class DevManager {
         System.out.println("Total: " + devList.size() + " developer(s)");
     }
 
-    public Developer findById(String id) {
+    public Developer findById(String devId) {
         for (Developer dev : devList) {
-            if (dev.getDevId().equals(id)) {
+            if (dev.getDevId().equalsIgnoreCase(devId)) {
                 return dev;
             }
         }
