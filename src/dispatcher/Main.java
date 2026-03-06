@@ -2,17 +2,17 @@
 package dispatcher;
 
 import manager.DevManager;
+import manager.ProjectManager;
 import model.Developer;
 import tools.Inputter;
 
 public class Main {
     public static void main(String[] args) {
         // Khởi tạo đối tượng quản lý và công cụ nhập liệu
-        DevManager manager = new DevManager();
+        DevManager dm = new DevManager();
+        ProjectManager pm = new ProjectManager();
         Inputter input = new Inputter();
-        
-        // Gọi hàm đọc dữ liệu từ file lên RAM ngay khi khởi động chương trình [cite: 57]
-        manager.readFromFile(); 
+
 
         int choice;
         do {
@@ -39,24 +39,24 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    manager.listAllDevelopers();
+                    dm.listAllDevelopers();
                     break;
                 case 2:
                     Developer dev = input.addNewDevloper();
-                    manager.addNewDeveloper(dev);
+                    dm.addNewDeveloper(dev);
                     break;
                 case 3: 
                     String searchId = input.getString("Enter developer ID to search: ");
-                    manager.searchDeveloper(searchId);
+                    dm.searchDeveloper(searchId);
                     break;
                 case 4:
                     String updateId = input.getString("Enter develpoer ID to update salary: ");
                     int newSalary = input.getInt("Enter new salary: ");
-                    manager.updateSalary(updateId, newSalary);
+                    dm.updateSalary(updateId, newSalary);
                     break;
                 case 5:
                     String searchLang = input.getString("Enter a programming language to search: ");
-                    manager.listByLanguage(searchLang);
+                    dm.listByLanguage(searchLang);
                     break;
                 case 6:
                     System.out.println("Function 6 is under construction.");
@@ -74,14 +74,13 @@ public class Main {
                     System.out.println("Function 10 is under construction.");
                     break;
                 case 11:
-                    manager.saveToFile();
+                    dm.saveToFile();
                     break;
                 case 12:
-                    // Xử lý logic trước khi thoát 
-                    if (!manager.isSaved()) {
+                    if (!dm.isSaved()) {
                         String ans = input.getString("Do you want to save the changes before exiting? (Y/N): ");
                         if (ans.equalsIgnoreCase("Y")) {
-                            manager.saveToFile();
+                            dm.saveToFile();
                         }
                     }
                     System.out.println("Exiting program. Goodbye!");

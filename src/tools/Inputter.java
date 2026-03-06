@@ -1,8 +1,10 @@
 package tools;
 
-import java.util.Arrays;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import model.Developer;
+import model.Project;
 
 public class Inputter {
 
@@ -106,5 +108,34 @@ public class Inputter {
         dev.setProgramLanguages(languages);
         dev.setSalary(getInt("Enter salary (>= 1000 USD): "));
         return dev;
+    }
+    
+    //Add new Project
+    public Project addNewProject() {
+        Project proj = new Project();
+        proj.setProjectId(inputAndLoop("Enter project ID: ", Validation.PROJECT_ID_VALID, true));
+        proj.setDevId(inputAndLoop("Enter developer ID: ", Validation.DEV_ID_VALID, true));
+        proj.setDurationMonths(getInt("Enter duration (in monts, > 0: "));
+        proj.setStartDate(getDate("Enter start date (dd/MM/yyyy): "));
+        proj.setProjectName(inputAndLoop("Enter project name: ", Validation.PROJECT_NAME_VALID, true));
+        return proj;
+    }
+
+    //Format days/months/years
+    public LocalDate getDate(String temp) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate resultDate = null;
+        boolean isValid = false;
+
+        do {
+            try {
+                String dateStr = getString(temp);
+                resultDate = LocalDate.parse(dateStr, dtf);
+                isValid = true;
+            } catch (Exception e) {
+                System.out.println("Error: Invalid date format! Please enter date as dd/MM/yyyy (e.g., 01/12/2026).");
+            }
+        } while (!isValid);
+        return resultDate;
     }
 }

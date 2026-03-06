@@ -11,18 +11,15 @@ import tools.FileUtils;
 public class DevManager {
 
     private List<Developer> devList;
-    private List<Project> projList;
     private String devFilePath;
-    private String projFilePath;
     private boolean saved;
 
     //constructor
     public DevManager() {
         devList = new ArrayList<>();
-        projList = new ArrayList<>();
         this.saved = true;
         this.devFilePath = "developers.txt";
-        this.projFilePath = "projects.txt";
+        this.readFromFile();
     }
 
     //Getter and setter
@@ -33,11 +30,14 @@ public class DevManager {
     public void setSaved(boolean saved) {
         this.saved = saved;
     }
+    
+    public List<Developer> getDevList() {
+        return this.devList;
+    }
 
     public void readFromFile() {
         // Xóa dữ liệu cũ trước khi đọc để tránh bị nhân đôi
         devList.clear();
-        projList.clear();
 
         // 1. ĐỌC FILE DEVELOPERS.TXT
         List<String> devLines = FileUtils.readFile(devFilePath);
@@ -69,33 +69,11 @@ public class DevManager {
             }
         }
 
-        // 2. ĐỌC FILE PROJECTS.TXT
-        List<String> projLines = FileUtils.readFile(projFilePath);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        for (String line : projLines) {
-            try {
-                String[] tokens = line.split(",");
-                if (tokens.length >= 5) {
-                    String pId = tokens[0].trim();
-                    String dId = tokens[1].trim();
-                    String pName = tokens[2].trim();
-                    int duration = Integer.parseInt(tokens[3].trim());
-                    LocalDate startDate = LocalDate.parse(tokens[4].trim(), formatter);
-
-                    projList.add(new Project(pId, dId, pName, duration, startDate));
-                }
-            } catch (Exception e) {
-                System.out.println("Error parsing project line: " + line);
-            }
-        }
-
         // 3. CẬP NHẬT TRẠNG THÁI VÀ HIỂN THỊ THÔNG BÁO CHI TIẾT
         this.saved = true;
         System.out.println("Data loaded successfully from files!");
         // In ra số lượng đối tượng thực tế đã đưa vào danh sách thành công
-        System.out.println("-> Total Developers loaded: " + devList.size());
-        System.out.println("-> Total Projects loaded: " + projList.size());
+        System.out.println("Total Developers loaded: " + devList.size());
     }
 
     public void listAllDevelopers() {
@@ -246,32 +224,17 @@ public class DevManager {
             devLines.add(line);
         }
 
-        // 2. CHUẨN BỊ DỮ LIỆU CHO PROJECTS
-        List<String> projLines = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        for (Project proj : projList) {
-            // Chuyển đổi LocalDate về dạng chuỗi dd/MM/yyyy
-            String line = String.format("%s, %s, %s, %d, %s",
-                    proj.getProjectId(),
-                    proj.getDevId(),
-                    proj.getProjectName(),
-                    proj.getDurationMonths(),
-                    proj.getStartDate().format(formatter));
-            projLines.add(line);
-        }
-
         // 3. GHI XUỐNG FILE THÔNG QUA FILEUTILS
         boolean isDevSaved = FileUtils.writeFile(devFilePath, devLines);
-        boolean isProjSaved = FileUtils.writeFile(projFilePath, projLines);
+        
 
         // 4. KIỂM TRA KẾT QUẢ VÀ HIỂN THỊ THÔNG BÁO CHI TIẾT
-        if (isDevSaved && isProjSaved) {
+        if (isDevSaved) {
             this.saved = true; // Cập nhật cờ hiệu thành true (Đã lưu)
             System.out.println("========================================");
             System.out.println("Data saved to files successfully!");
             // In ra số lượng record thực tế đã ghi xuống file
             System.out.println("-> Total Developers saved: " + devLines.size());
-            System.out.println("-> Total Projects saved: " + projLines.size());
             System.out.println("========================================");
         } else {
             System.out.println("Error: Failed to save data to files. Please check file permissions.");

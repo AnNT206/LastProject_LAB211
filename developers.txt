@@ -16,3 +16,4 @@ DEV014, Ly Thi O, [JavaScript, Vue], 4200
 DEV015, Truong Van P, [Rust, Systems], 6000
 DEV016, Le Q, [Java], 3900
 DEV017, Mai Thi R, [Java, SQL], 5000
+DEV111, ngo thien an, [java, python, c], 30000
