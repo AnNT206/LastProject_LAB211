@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import model.Developer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import tools.FileUtils;
 
 public class DevManager {
@@ -34,6 +36,7 @@ public class DevManager {
         return this.devList;
     }
 
+    //Đọc dữ liệu
     public void readFromFile() {
         // Xóa dữ liệu cũ trước khi đọc để tránh bị nhân đôi
         devList.clear();
@@ -75,6 +78,7 @@ public class DevManager {
         System.out.println("Total Developers loaded: " + devList.size());
     }
 
+    //In ra màn hình toàn bộ developer (listAllDevelopers)
     public void listAllDevelopers() {
         if (devList.isEmpty()) {
             System.out.println("No developers found");
@@ -97,6 +101,7 @@ public class DevManager {
         System.out.println("Total: " + devList.size() + " developer(s)");
     }
 
+    //Kiểm tra devId có trùng không (findById)
     public Developer findById(String devId) {
         for (Developer dev : devList) {
             if (dev.getDevId().equalsIgnoreCase(devId)) {
@@ -106,6 +111,7 @@ public class DevManager {
         return null;
     }
 
+    //Thêm 1 developer mới (addNewDeveloper)
     public boolean addNewDeveloper(Developer dev) {
         if (findById(dev.getDevId()) != null) {
             System.out.println("Developer already exists");
@@ -123,6 +129,7 @@ public class DevManager {
         return true;
     }
 
+    //Tìm developer theo devId (searchDeveloper)
     public void searchDeveloper(String devId) {
         System.out.println("--- SEARCH DEVELOPER BY ID ---");
         System.out.println("Search developer with id '" + devId + "':");
@@ -151,6 +158,7 @@ public class DevManager {
         }
     }
 
+    //Cập nhật Salary của developer theo devId (updateSalary)
     public boolean updateSalary(String devId, int newSalary) {
         Developer dev = findById(devId);
         if (dev == null) {
@@ -169,6 +177,7 @@ public class DevManager {
         return true;
     }
 
+    //Tìm developer theo ngôn ngữ lập trình (listByLanguage)
     public void listByLanguage(String language) {
         System.out.println("--- SEARCH DEVELOPERS BY LANGUAGE ---");
         System.out.println("Searching for language '" + language + "':");
@@ -209,7 +218,54 @@ public class DevManager {
             System.out.println("No developers found with language: " + language);
         }
     }
+    
+    //Xóa developer theo ID
+    public boolean removeDeveloper(String removeId, ProjectManager pm) {
+        Developer removeDev = findById(removeId);
+        if (removeDev == null) {
+            System.out.println("Developer ID does not exist");
+            return false;
+        }
+        
+        if (pm.hasProjectByDevId(removeId)) {
+            System.out.println("Cannot delete: Developer is assigned to projects");
+            return false;
+        }
+        
+        devList.remove(removeDev);
+        saved = false;
+        System.out.println("Remove developer successfully");
+        return true;
+    }
+    
+    //Sắp xếp developer theo Salary tăng dần
+    public void sortDeveloperBySalary() {
+        System.out.println("--- SORT DEVELOPERS BY SALARY ---");
+        
+        if (devList.isEmpty()) {
+            System.out.println("No developers found");
+            return;
+        }
+        
+        Collections.sort(devList, new Comparator<Developer>() {
+            @Override
+            public int compare(Developer o1, Developer o2) {
+                int salaryComparision = Integer.compare(o1.getSalary(), o2.getSalary());
+                
+                if (salaryComparision == 0) {
+                    return o1.getFullName().compareToIgnoreCase(o2.getFullName());
+                }
+                
+                return salaryComparision;
+            }
+        });
+        
+        saved = false;
+        System.out.println("Developer sorte successfully");
+        listAllDevelopers();
+    }
 
+    //Lưu dữ liệu
     public void saveToFile() {
         // 1. CHUẨN BỊ DỮ LIỆU CHO DEVELOPERS
         List<String> devLines = new ArrayList<>();

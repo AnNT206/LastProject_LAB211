@@ -115,7 +115,7 @@ public class Inputter {
         Project proj = new Project();
         proj.setProjectId(inputAndLoop("Enter project ID: ", Validation.PROJECT_ID_VALID, true));
         proj.setDevId(inputAndLoop("Enter developer ID: ", Validation.DEV_ID_VALID, true));
-        proj.setDurationMonths(getInt("Enter duration (in monts, > 0: "));
+        proj.setDurationMonths(getInt("Enter duration (in monts, > 0): "));
         proj.setStartDate(getDate("Enter start date (dd/MM/yyyy): "));
         proj.setProjectName(inputAndLoop("Enter project name: ", Validation.PROJECT_NAME_VALID, true));
         return proj;

@@ -63,7 +63,7 @@ public class ProjectManager {
         System.out.println("Data loaded successfully from files!");
         System.out.println("Total Projects loaded: " + projList.size());
     }
-    
+
     //findById
     public Project findById(String projId) {
         for (Project proj : projList) {
@@ -73,35 +73,124 @@ public class ProjectManager {
         }
         return null;
     }
-    
+
     //Add new project
-    public boolean addNewProject(DevManager dm ,Project proj) {
+    public boolean addNewProject(DevManager dm, Project proj) {
         if (findById(proj.getProjectId()) != null) {
             System.out.println("Project ID already exists");
             return false;
         }
-        
+
         Developer dev = dm.findById(proj.getDevId());
         if (dev == null) {
             System.out.println("Developer ID does not exists");
             return false;
         }
-        
+
+        //DỰ PHÒNG NẾU CÓ YẾU CẦU
+        /*
         LocalDate currentDate = LocalDate.now();
         if (!proj.getStartDate().isAfter(currentDate)) {
             System.out.println("Start date must be after current date");
             return false;
         }
-        
+         */
         projList.add(proj);
         System.out.println("Add new project successfully");
         saved = false;
-        return true;        
+        return true;
+    }
+
+    public void listProjectByDeveloper(DevManager dm) {
+        System.out.println("=======================================================");
+        System.out.println("          LIST PROJECTS GROUPED BY DEVELOPER           ");
+        System.out.println("=======================================================");
+
+        List<Developer> devList = dm.getDevList();
+
+        if (devList.isEmpty()) {
+            System.out.println("No developers found");
+            return;
+        }
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        for (Developer dev : devList) {
+            System.out.println("\nDeveloper: [" + dev.getDevId() + "] - " + dev.getFullName());
+
+            boolean hasProject = false;
+            boolean isHeaderPrinted = false;
+
+            for (Project proj : projList) {
+                if (proj.getDevId().equalsIgnoreCase(dev.getDevId())) {
+                    hasProject = true;
+                    
+                    if (!isHeaderPrinted) {
+                    System.out.println("+------------+--------------------------------+------------+------------+");
+                    System.out.println("| Project ID |          Project Name          |  Duration  | Start Date |");
+                    System.out.println("+------------+--------------------------------+------------+------------+");
+                    isHeaderPrinted = true;
+                }
+
+                System.out.printf("| %-10s | %-30s | %-10s | %-10s |%n",
+                        proj.getProjectId(),
+                        proj.getProjectName(),
+                        proj.getDurationMonths() + " months",
+                        proj.getStartDate().format(dtf));
+                }
+            }
+            
+            if (hasProject) {
+                System.out.println("+------------+--------------------------------+------------+------------+");
+            }
+            else {
+                System.out.println("No project assigned");
+            }
+        }
     }
     
+    //Tính tổng kinh nghiệm của 
+    public void calculateTotalExperience(String devId, DevManager dm) {
+        System.out.println("--- CALCULATE TOTAL EXPERIENCE ---");
+        Developer dev = dm.findById(devId);
+        if (dev == null) {
+            System.out.println("Developer ID does not exist");
+            return;
+        }
+        
+        int totalMonths = 0;
+        boolean hasProject = false;
+        
+        for (Project proj : projList) {
+            if (proj.getDevId().equalsIgnoreCase(devId)) {
+                totalMonths += proj.getDurationMonths();
+                hasProject = true;
+            }
+        }
+        
+        System.out.println("Developer: '" + devId + "' - " + dev.getFullName());
+        if (!hasProject) {
+            System.out.println("Developer has not participated in any project. Total experience: 0 months ");
+        }
+        else {
+            int years = totalMonths / 12;
+            int remainingMonths = totalMonths % 12;
+            System.out.println("Total experience: " + totalMonths + " months");
+            
+            if (years > 0) {
+                System.out.println("-> Equivalent to " + years + " year(s) and " + remainingMonths + " month(s)");
+            }
+        }
+    }
     
-    
-    
+    public boolean hasProjectByDevId(String devId) {
+        for (Project proj : projList) {
+            if (proj.getDevId().equalsIgnoreCase(devId)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     //saveToFile of projects.txt
     public void saveToFile() {
@@ -117,9 +206,9 @@ public class ProjectManager {
                     proj.getStartDate().format(formatter));
             projLines.add(line);
         }
-        
+
         boolean isProjSaved = FileUtils.writeFile(projFilePath, projLines);
-        
+
         if (isProjSaved) {
             this.saved = true; // Cập nhật cờ hiệu thành true (Đã lưu)
             System.out.println("========================================");

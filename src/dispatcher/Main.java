@@ -1,4 +1,3 @@
-
 package dispatcher;
 
 import manager.DevManager;
@@ -8,12 +7,12 @@ import model.Project;
 import tools.Inputter;
 
 public class Main {
+
     public static void main(String[] args) {
         // Khởi tạo đối tượng quản lý và công cụ nhập liệu
         DevManager dm = new DevManager();
         ProjectManager pm = new ProjectManager();
         Inputter input = new Inputter();
-
 
         int choice;
         do {
@@ -34,7 +33,7 @@ public class Main {
             System.out.println("11. Save data to files");
             System.out.println("12. Quit program");
             System.out.println("=======================================================");
-            
+
             // Lấy lựa chọn của người dùng (từ 1 đến 12)
             choice = input.getInt("Enter your choice (1-12): ");
 
@@ -46,7 +45,7 @@ public class Main {
                     Developer dev = input.addNewDevloper();
                     dm.addNewDeveloper(dev);
                     break;
-                case 3: 
+                case 3:
                     String searchId = input.getString("Enter developer ID to search: ");
                     dm.searchDeveloper(searchId);
                     break;
@@ -64,25 +63,30 @@ public class Main {
                     pm.addNewProject(dm, proj);
                     break;
                 case 7:
-                    System.out.println("Function 7 is under construction.");
+                    pm.listProjectByDeveloper(dm);
                     break;
-                case 8:
-                    System.out.println("Function 8 is under construction.");
+                case 8: {
+                    String devId = input.getString("Enter developer ID to calculate: ");
+                    pm.calculateTotalExperience(devId, dm);
                     break;
+                }
                 case 9:
-                    System.out.println("Function 9 is under construction.");
+                    String removeId = input.getString("Enter developer ID to remove: ");
+                    dm.removeDeveloper(removeId, pm);
                     break;
                 case 10:
-                    System.out.println("Function 10 is under construction.");
+                    dm.sortDeveloperBySalary();
                     break;
                 case 11:
                     dm.saveToFile();
+                    pm.saveToFile();
                     break;
                 case 12:
                     if (!dm.isSaved()) {
                         String ans = input.getString("Do you want to save the changes before exiting? (Y/N): ");
                         if (ans.equalsIgnoreCase("Y")) {
                             dm.saveToFile();
+                            pm.saveToFile();
                         }
                     }
                     System.out.println("Exiting program. Goodbye!");
