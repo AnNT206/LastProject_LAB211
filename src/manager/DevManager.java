@@ -246,13 +246,13 @@ public class DevManager {
         }
         
         Collections.sort(devList, (Developer o1, Developer o2) -> {
-            int salaryComparision = Integer.compare(o1.getSalary(), o2.getSalary());
+            int salaryComparison = Integer.compare(o1.getSalary(), o2.getSalary());
             
-            if (salaryComparision == 0) {
+            if (salaryComparison == 0) {
                 return o1.getFullName().compareToIgnoreCase(o2.getFullName());
             }
             
-            return salaryComparision;
+            return salaryComparison;
         });
         
         saved = false;
