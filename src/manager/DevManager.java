@@ -1,7 +1,5 @@
 package manager;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import model.Developer;
 import java.util.ArrayList;
@@ -31,7 +29,7 @@ public class DevManager {
     public void setSaved(boolean saved) {
         this.saved = saved;
     }
-    
+
     public List<Developer> getDevList() {
         return this.devList;
     }
@@ -218,7 +216,7 @@ public class DevManager {
             System.out.println("No developers found with language: " + language);
         }
     }
-    
+
     //Xóa developer theo ID
     public boolean removeDeveloper(String removeId, ProjectManager pm) {
         Developer removeDev = findById(removeId);
@@ -237,7 +235,7 @@ public class DevManager {
         System.out.println("Remove developer successfully");
         return true;
     }
-    
+
     //Sắp xếp developer theo Salary tăng dần
     public void sortDeveloperBySalary() {
         System.out.println("--- SORT DEVELOPERS BY SALARY ---");
@@ -247,21 +245,18 @@ public class DevManager {
             return;
         }
         
-        Collections.sort(devList, new Comparator<Developer>() {
-            @Override
-            public int compare(Developer o1, Developer o2) {
-                int salaryComparision = Integer.compare(o1.getSalary(), o2.getSalary());
-                
-                if (salaryComparision == 0) {
-                    return o1.getFullName().compareToIgnoreCase(o2.getFullName());
-                }
-                
-                return salaryComparision;
+        Collections.sort(devList, (Developer o1, Developer o2) -> {
+            int salaryComparision = Integer.compare(o1.getSalary(), o2.getSalary());
+            
+            if (salaryComparision == 0) {
+                return o1.getFullName().compareToIgnoreCase(o2.getFullName());
             }
+            
+            return salaryComparision;
         });
         
         saved = false;
-        System.out.println("Developer sorte successfully");
+        System.out.println("Developer sorted successfully");
         listAllDevelopers();
     }
 
@@ -281,7 +276,6 @@ public class DevManager {
 
         // 3. GHI XUỐNG FILE THÔNG QUA FILEUTILS
         boolean isDevSaved = FileUtils.writeFile(devFilePath, devLines);
-        
 
         // 4. KIỂM TRA KẾT QUẢ VÀ HIỂN THỊ THÔNG BÁO CHI TIẾT
         if (isDevSaved) {

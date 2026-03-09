@@ -101,42 +101,41 @@ public class ProjectManager {
         return true;
     }
 
+    //Liệt kê danh sách developer có project (listProjectByDeveloper)
     public void listProjectByDeveloper(DevManager dm) {
-        System.out.println("=======================================================");
-        System.out.println("          LIST PROJECTS GROUPED BY DEVELOPER           ");
-        System.out.println("=======================================================");
-
+        System.out.println("--- LIST PROJECTS GROUPED BY DEVELOPER ---");
+        
         List<Developer> devList = dm.getDevList();
-
+        
         if (devList.isEmpty()) {
             System.out.println("No developers found");
             return;
         }
-
+        
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
+        
         for (Developer dev : devList) {
-            System.out.println("\nDeveloper: [" + dev.getDevId() + "] - " + dev.getFullName());
-
+            System.out.println("Developer: [" + dev.getDevId() + "] - " + dev.getFullName());
+            
             boolean hasProject = false;
             boolean isHeaderPrinted = false;
-
+            
             for (Project proj : projList) {
                 if (proj.getDevId().equalsIgnoreCase(dev.getDevId())) {
                     hasProject = true;
                     
                     if (!isHeaderPrinted) {
-                    System.out.println("+------------+--------------------------------+------------+------------+");
-                    System.out.println("| Project ID |          Project Name          |  Duration  | Start Date |");
-                    System.out.println("+------------+--------------------------------+------------+------------+");
-                    isHeaderPrinted = true;
-                }
-
-                System.out.printf("| %-10s | %-30s | %-10s | %-10s |%n",
-                        proj.getProjectId(),
-                        proj.getProjectName(),
-                        proj.getDurationMonths() + " months",
-                        proj.getStartDate().format(dtf));
+                        System.out.println("+------------+--------------------------------+------------+------------+");
+                        System.out.println("| Project ID |          Project Name          |  Duration  | Start Date |");
+                        System.out.println("+------------+--------------------------------+------------+------------+");
+                        isHeaderPrinted = true;
+                    }
+                    
+                    System.out.printf("| %-10s | %-30s | %-10s | %-10s |%n",
+                            proj.getProjectId(),
+                            proj.getProjectName(),
+                            proj.getDurationMonths() + " months",
+                            proj.getStartDate().format(dtf));
                 }
             }
             
@@ -148,7 +147,7 @@ public class ProjectManager {
             }
         }
     }
-    
+
     //Tính tổng kinh nghiệm của 
     public void calculateTotalExperience(String devId, DevManager dm) {
         System.out.println("--- CALCULATE TOTAL EXPERIENCE ---");
@@ -182,7 +181,7 @@ public class ProjectManager {
             }
         }
     }
-    
+
     public boolean hasProjectByDevId(String devId) {
         for (Project proj : projList) {
             if (proj.getDevId().equalsIgnoreCase(devId)) {
