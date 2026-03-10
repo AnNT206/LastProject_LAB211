@@ -87,14 +87,6 @@ public class ProjectManager {
             return false;
         }
 
-        //DỰ PHÒNG NẾU CÓ YẾU CẦU
-        /*
-        LocalDate currentDate = LocalDate.now();
-        if (!proj.getStartDate().isAfter(currentDate)) {
-            System.out.println("Start date must be after current date");
-            return false;
-        }
-         */
         projList.add(proj);
         System.out.println("Add new project successfully");
         saved = false;
@@ -104,26 +96,26 @@ public class ProjectManager {
     //Liệt kê danh sách developer có project (listProjectByDeveloper)
     public void listProjectByDeveloper(DevManager dm) {
         System.out.println("--- LIST PROJECTS GROUPED BY DEVELOPER ---");
-        
+
         List<Developer> devList = dm.getDevList();
-        
+
         if (devList.isEmpty()) {
             System.out.println("No developers found");
             return;
         }
-        
+
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        
+
         for (Developer dev : devList) {
             System.out.println("Developer: [" + dev.getDevId() + "] - " + dev.getFullName());
-            
+
             boolean hasProject = false;
             boolean isHeaderPrinted = false;
-            
+
             for (Project proj : projList) {
                 if (proj.getDevId().equalsIgnoreCase(dev.getDevId())) {
                     hasProject = true;
-                    
+
                     if (!isHeaderPrinted) {
                         System.out.println("+------------+--------------------------------+------------+------------+");
                         System.out.println("| Project ID |          Project Name          |  Duration  | Start Date |");
@@ -172,7 +164,7 @@ public class ProjectManager {
             System.out.println("Developer has not participated in any project. Total experience: 0 months ");
         }
         else {
-            int years = totalMonths / 12;
+            int years = totalMonths / 12; 
             int remainingMonths = totalMonths % 12;
             System.out.println("Total experience: " + totalMonths + " months");
             

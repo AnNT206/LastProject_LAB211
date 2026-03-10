@@ -36,43 +36,36 @@ public class DevManager {
 
     //Đọc dữ liệu
     public void readFromFile() {
-        // Xóa dữ liệu cũ trước khi đọc để tránh bị nhân đôi
-        devList.clear();
+        devList.clear(); 
 
-        // 1. ĐỌC FILE DEVELOPERS.TXT
         List<String> devLines = FileUtils.readFile(devFilePath);
         for (String line : devLines) {
             try {
-                int startBracket = line.indexOf('[');
-                int endBracket = line.indexOf(']');
+                String[] parts = line.split("\\[|\\]");
 
-                String part1 = line.substring(0, startBracket);
-                String[] tokens1 = part1.split(",");
-                String id = tokens1[0].trim();
-                String name = tokens1[1].trim();
+                String[] info = parts[0].split(",");
+                String id = info[0].trim();
+                String name = info[1].trim();
 
-                String langString = line.substring(startBracket + 1, endBracket);
                 List<String> langs = new ArrayList<>();
-                if (!langString.trim().isEmpty()) {
-                    String[] langArray = langString.split(",");
-                    for (String lang : langArray) {
+                if (!parts[1].trim().isEmpty()) {
+                    for (String lang : parts[1].split(",")) {
                         langs.add(lang.trim());
                     }
                 }
 
-                String part3 = line.substring(endBracket + 1);
-                int salary = Integer.parseInt(part3.replace(",", "").trim());
+                int salary = Integer.parseInt(parts[2].replace(",", "").trim());
 
+                // 4. Thêm vào danh sách
                 devList.add(new Developer(id, name, langs, salary));
+
             } catch (Exception e) {
                 System.out.println("Error parsing developer line: " + line);
             }
         }
 
-        // 3. CẬP NHẬT TRẠNG THÁI VÀ HIỂN THỊ THÔNG BÁO CHI TIẾT
         this.saved = true;
         System.out.println("Data loaded successfully from files!");
-        // In ra số lượng đối tượng thực tế đã đưa vào danh sách thành công
         System.out.println("Total Developers loaded: " + devList.size());
     }
 
@@ -112,16 +105,16 @@ public class DevManager {
     //Thêm 1 developer mới (addNewDeveloper)
     public boolean addNewDeveloper(Developer dev) {
         if (findById(dev.getDevId()) != null) {
-            System.out.println("Developer already exists");
+            System.out.println("Developer ID already exists");
             return false;
         }
 
         if (dev.getSalary() < 1000) {
-            System.out.println("Salary must be greater than 1000");
+            System.out.println("Salary must be greater than 1000 USD");
             return false;
         }
 
-        System.out.println("Developer added successfully");
+        System.out.println("Add new developer successfully");
         saved = false;
         devList.add(dev);
         return true;
@@ -152,7 +145,7 @@ public class DevManager {
             }
         }
         if (!found) {
-            System.out.println("Develop ID does not exist!");
+            System.out.println("Developer ID does not exist");
         }
     }
 
@@ -165,7 +158,7 @@ public class DevManager {
         }
 
         if (newSalary < 1000) {
-            System.out.println("Salary must be at least 1000 USD");
+            System.out.println("Salary must be greater than 1000 USD");
             return false;
         }
 
@@ -176,7 +169,7 @@ public class DevManager {
     }
 
     //Tìm developer theo ngôn ngữ lập trình (listByLanguage)
-    public void listByLanguage(String language) {
+    public void searchByLanguage(String language) {
         System.out.println("--- SEARCH DEVELOPERS BY LANGUAGE ---");
         System.out.println("Searching for language '" + language + "':");
 
@@ -224,12 +217,12 @@ public class DevManager {
             System.out.println("Developer ID does not exist");
             return false;
         }
-        
+
         if (pm.hasProjectByDevId(removeId)) {
             System.out.println("Cannot delete: Developer is assigned to projects");
             return false;
         }
-        
+
         devList.remove(removeDev);
         saved = false;
         System.out.println("Remove developer successfully");
@@ -239,22 +232,22 @@ public class DevManager {
     //Sắp xếp developer theo Salary tăng dần
     public void sortDeveloperBySalary() {
         System.out.println("--- SORT DEVELOPERS BY SALARY ---");
-        
+
         if (devList.isEmpty()) {
             System.out.println("No developers found");
             return;
         }
-        
+
         Collections.sort(devList, (Developer o1, Developer o2) -> {
             int salaryComparison = Integer.compare(o1.getSalary(), o2.getSalary());
-            
+
             if (salaryComparison == 0) {
                 return o1.getFullName().compareToIgnoreCase(o2.getFullName());
             }
-            
+
             return salaryComparison;
         });
-        
+
         saved = false;
         System.out.println("Developer sorted successfully");
         listAllDevelopers();
@@ -262,10 +255,8 @@ public class DevManager {
 
     //Lưu dữ liệu
     public void saveToFile() {
-        // 1. CHUẨN BỊ DỮ LIỆU CHO DEVELOPERS
         List<String> devLines = new ArrayList<>();
         for (Developer dev : devList) {
-            // List.toString() sẽ tự tạo chuỗi dạng [Java, C++]
             String line = String.format("%s, %s, %s, %d",
                     dev.getDevId(),
                     dev.getFullName(),
@@ -274,15 +265,14 @@ public class DevManager {
             devLines.add(line);
         }
 
-        // 3. GHI XUỐNG FILE THÔNG QUA FILEUTILS
         boolean isDevSaved = FileUtils.writeFile(devFilePath, devLines);
 
-        // 4. KIỂM TRA KẾT QUẢ VÀ HIỂN THỊ THÔNG BÁO CHI TIẾT
         if (isDevSaved) {
-            this.saved = true; // Cập nhật cờ hiệu thành true (Đã lưu)
+            this.saved = true;
             System.out.println("========================================");
             System.out.println("Data saved to files successfully!");
-            // In ra số lượng record thực tế đã ghi xuống file
+            System.out.println("========================================");
+
             System.out.println("-> Total Developers saved: " + devLines.size());
             System.out.println("========================================");
         } else {

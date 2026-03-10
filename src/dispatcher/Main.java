@@ -56,7 +56,7 @@ public class Main {
                     break;
                 case 5:
                     String searchLang = input.getString("Enter a programming language to search: ");
-                    dm.listByLanguage(searchLang);
+                    dm.searchByLanguage(searchLang);
                     break;
                 case 6:
                     Project proj = input.addNewProject();
@@ -82,7 +82,7 @@ public class Main {
                     pm.saveToFile();
                     break;
                 case 12:
-                    if (!dm.isSaved()) {
+                    if (!dm.isSaved() || !pm.isSaved()) {
                         String ans = input.getString("Do you want to save the changes before exiting? (Y/N): ");
                         if (ans.equalsIgnoreCase("Y")) {
                             dm.saveToFile();
