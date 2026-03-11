@@ -37,31 +37,29 @@ public class ProjectManager {
     //ReadFromFile of projects.txt
     public void readFromFile() {
         projList.clear();
-
-        // 2. ĐỌC FILE PROJECTS.TXT
+        
         List<String> projLines = FileUtils.readFile(projFilePath);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         for (String line : projLines) {
             try {
-                String[] tokens = line.split(",");
+                String [] tokens = line.split(",");
                 if (tokens.length >= 5) {
                     String pId = tokens[0].trim();
                     String dId = tokens[1].trim();
                     String pName = tokens[2].trim();
                     int duration = Integer.parseInt(tokens[3].trim());
-                    LocalDate startDate = LocalDate.parse(tokens[4].trim(), formatter);
-
+                    LocalDate startDate = LocalDate.parse(tokens[4].trim(), dtf);
+                    
                     projList.add(new Project(pId, dId, pName, duration, startDate));
                 }
             } catch (Exception e) {
-                System.out.println("Error parsing project line: " + line);
+                System.out.println("Error parsing projects line: " + line);
             }
         }
-
+        
         this.saved = true;
         System.out.println("Data loaded successfully from files!");
-        System.out.println("Total Projects loaded: " + projList.size());
+        System.out.println("Total projects loaded: " + projList.size());
     }
 
     //findById
@@ -133,7 +131,7 @@ public class ProjectManager {
             
             if (hasProject) {
                 System.out.println("+------------+--------------------------------+------------+------------+");
-            }
+            } 
             else {
                 System.out.println("No project assigned");
             }
@@ -149,6 +147,8 @@ public class ProjectManager {
             return;
         }
         
+        System.out.println("Developer: [" + dev.getDevId() + "] - " + dev.getFullName());
+        
         int totalMonths = 0;
         boolean hasProject = false;
         
@@ -159,18 +159,17 @@ public class ProjectManager {
             }
         }
         
-        System.out.println("Developer: '" + devId + "' - " + dev.getFullName());
-        if (!hasProject) {
-            System.out.println("Developer has not participated in any project. Total experience: 0 months ");
-        }
-        else {
-            int years = totalMonths / 12; 
-            int remainingMonths = totalMonths % 12;
+        if (hasProject) {
             System.out.println("Total experience: " + totalMonths + " months");
             
+            int years = totalMonths / 12;
+            int remainingMonths = totalMonths % 12;
             if (years > 0) {
                 System.out.println("-> Equivalent to " + years + " year(s) and " + remainingMonths + " month(s)");
             }
+        }
+        else {
+            System.out.println("Developer had not participate in any project. Total experience 0 months");
         }
     }
 
@@ -186,29 +185,26 @@ public class ProjectManager {
     //saveToFile of projects.txt
     public void saveToFile() {
         List<String> projLines = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         for (Project proj : projList) {
-            // Chuyển đổi LocalDate về dạng chuỗi dd/MM/yyyy
             String line = String.format("%s, %s, %s, %d, %s",
                     proj.getProjectId(),
                     proj.getDevId(),
                     proj.getProjectName(),
                     proj.getDurationMonths(),
-                    proj.getStartDate().format(formatter));
+                    proj.getStartDate().format(dtf));
             projLines.add(line);
         }
-
-        boolean isProjSaved = FileUtils.writeFile(projFilePath, projLines);
-
-        if (isProjSaved) {
-            this.saved = true; // Cập nhật cờ hiệu thành true (Đã lưu)
-            System.out.println("========================================");
+        
+        boolean isProjectSaved = FileUtils.writeFile(projFilePath, projLines);
+        
+        if (isProjectSaved) {
+            this.saved = true;
             System.out.println("Data saved to files successfully!");
-            // In ra số lượng record thực tế đã ghi xuống file
-            System.out.println("-> Total Projects saved: " + projLines.size());
-            System.out.println("========================================");
-        } else {
-            System.out.println("Error: Failed to save data to files. Please check file permissions.");
+            System.out.println("Total projects saved: " + projLines.size());
+        }
+        else {
+            System.out.println("Error: Failed to save date to files.");
         }
     }
 }

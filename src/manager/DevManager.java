@@ -36,7 +36,7 @@ public class DevManager {
 
     //Đọc dữ liệu
     public void readFromFile() {
-        devList.clear(); 
+        devList.clear();
 
         List<String> devLines = FileUtils.readFile(devFilePath);
         for (String line : devLines) {
@@ -53,20 +53,18 @@ public class DevManager {
                         langs.add(lang.trim());
                     }
                 }
-
+                
                 int salary = Integer.parseInt(parts[2].replace(",", "").trim());
-
-                // 4. Thêm vào danh sách
+                
                 devList.add(new Developer(id, name, langs, salary));
-
+                
             } catch (Exception e) {
                 System.out.println("Error parsing developer line: " + line);
             }
         }
-
         this.saved = true;
         System.out.println("Data loaded successfully from files!");
-        System.out.println("Total Developers loaded: " + devList.size());
+        System.out.println("Total developers loaded: " + devList.size());
     }
 
     //In ra màn hình toàn bộ developer (listAllDevelopers)
@@ -269,14 +267,10 @@ public class DevManager {
 
         if (isDevSaved) {
             this.saved = true;
-            System.out.println("========================================");
-            System.out.println("Data saved to files successfully!");
-            System.out.println("========================================");
-
-            System.out.println("-> Total Developers saved: " + devLines.size());
-            System.out.println("========================================");
+            System.out.println("Data saved to files successfully");
+            System.out.println("Total developers saved: " + devLines.size());
         } else {
-            System.out.println("Error: Failed to save data to files. Please check file permissions.");
+            System.out.println("Error: Failed to save data to files.");
         }
     }
 }

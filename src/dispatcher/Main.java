@@ -50,7 +50,7 @@ public class Main {
                     dm.searchDeveloper(searchId);
                     break;
                 case 4:
-                    String updateId = input.getString("Enter develpoer ID to update salary: ");
+                    String updateId = input.getString("Enter developer ID to update: ");
                     int newSalary = input.getInt("Enter new salary: ");
                     dm.updateSalary(updateId, newSalary);
                     break;
